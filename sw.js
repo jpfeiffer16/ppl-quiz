@@ -1,5 +1,5 @@
 /* PPL Quiz service worker — offline shell + static/data cache */
-const CACHE = "ppl-quiz-v1";
+const CACHE = "ppl-quiz-v2";
 
 const PRECACHE = [
   "./",
@@ -11,6 +11,7 @@ const PRECACHE = [
   "./src/app.js",
   "./src/engine.js",
   "./src/storage.js",
+  "./src/install.js",
   "./data/index.js",
   "./data/packs.json",
   "./data/bank-notes.js",

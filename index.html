@@ -25,6 +25,37 @@
       </div>
     </header>
 
+    <div
+      id="install-banner"
+      class="install-banner"
+      hidden
+      role="region"
+      aria-label="Install app"
+      data-mode=""
+    >
+      <div class="install-banner-icon" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="7" fill="url(#ig)"/>
+          <path d="M14 7v10.5M14 17.5l-3.5-3.5M14 17.5l3.5-3.5M8.5 21h11" stroke="#061018" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="ig" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#3d9cf0"/><stop offset="1" stop-color="#2dd4bf"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <div class="install-banner-copy">
+        <strong class="install-banner-title">Install PPL Quiz</strong>
+        <p class="install-banner-text" id="install-banner-text">
+          Add to your home screen for one-tap access and offline practice.
+        </p>
+      </div>
+      <div class="install-banner-actions" id="install-banner-actions">
+        <button type="button" class="btn btn-primary btn-sm" id="install-btn">Install app</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="install-dismiss" aria-label="Dismiss install prompt">Not now</button>
+      </div>
+    </div>
+
     <main>
       <!-- HOME -->
       <section id="view-home" class="view active" aria-label="Home">

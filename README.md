@@ -41,8 +41,10 @@ This app is an installable Progressive Web App. Open the **https** site on your 
 
 ### Android (Chrome / Edge)
 1. Open the quiz URL in Chrome.
-2. Tap the menu (⋮) → **Install app** / **Add to Home screen**, **or** use the install banner if it appears.
+2. Tap **Install app** on the in-app banner when it appears, **or** use the browser menu (⋮) → **Install app** / **Add to Home screen**.
 3. Confirm. The app opens standalone like a native app.
+
+The banner is dismissible (“Not now”) and stays hidden for about a week if you decline. It never shows when the app is already installed.
 
 Offline: after the first visit, the shell, styles, scripts, and question banks are cached so you can drill without a network.
 

@@ -24,6 +24,7 @@ import {
   acceptList,
 } from "./engine.js";
 import { loadState, saveFilters, recordSession } from "./storage.js";
+import { initInstallPrompt } from "./install.js";
 
 /* ── DOM refs ─────────────────────────────────────────────────────────── */
 
@@ -785,5 +786,6 @@ function registerServiceWorker() {
 /* ── Boot ─────────────────────────────────────────────────────────────── */
 
 registerServiceWorker();
+initInstallPrompt();
 initHome();
 show("home");

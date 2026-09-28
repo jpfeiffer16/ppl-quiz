@@ -1,7 +1,7 @@
 {
-  "name": "AeroTutor — PPL Quiz",
+  "name": "AeroTutor \u2014 PPL Quiz",
   "short_name": "PPL Quiz",
-  "description": "Private Pilot practice quiz — Study Notes, PHAK, and AFH packs.",
+  "description": "Private Pilot practice quiz \u2014 Study Notes, PHAK, and AFH packs.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -9,7 +9,10 @@
   "background_color": "#0b1220",
   "theme_color": "#0b1220",
   "lang": "en",
-  "categories": ["education", "utilities"],
+  "categories": [
+    "education",
+    "utilities"
+  ],
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -34,6 +37,14 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "id": "./",
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://jpfeiffer16.github.io/ppl-quiz/manifest.webmanifest"
     }
   ]
 }

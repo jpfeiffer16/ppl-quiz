@@ -163,7 +163,8 @@ body {
   .card-enter,
   .progress-fill,
   .choice,
-  .btn {
+  .btn,
+  .install-banner {
     animation: none !important;
     transition: none !important;
   }
@@ -1192,4 +1193,81 @@ select:focus-visible {
   font-size: 0.85rem;
   color: var(--muted, #8b9bb4);
   line-height: 1.35;
+}
+
+
+/* ── Install banner (PWA) ──────────────────────────────────────────────── */
+
+.install-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+  margin: 0 0 1.15rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(61, 156, 240, 0.35);
+  background:
+    linear-gradient(135deg, rgba(61, 156, 240, 0.12), rgba(45, 212, 191, 0.08)),
+    var(--bg-elev);
+  box-shadow: var(--shadow-sm);
+  animation: view-in 280ms var(--ease);
+}
+
+.install-banner[hidden] {
+  display: none !important;
+}
+
+.install-banner-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+}
+
+.install-banner-copy {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.install-banner-title {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.install-banner-text {
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.install-banner-text strong {
+  color: var(--text);
+  font-weight: 650;
+}
+
+.install-banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+
+.install-banner[data-mode="ios"] #install-btn {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .install-banner-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .install-banner-actions .btn {
+    flex: 1 1 auto;
+  }
 }

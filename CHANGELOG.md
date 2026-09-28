@@ -1,5 +1,13 @@
 # Changelog
 
+## Install affordance (2026-09-28)
+
+- Native-style **Install app** banner: listens for `beforeinstallprompt`, stashes event, calls `prompt()` + handles `userChoice`
+- Hides when already installed (`display-mode: standalone`, `getInstalledRelatedApps`, `appinstalled`)
+- Dismissible “Not now” — remembered ~7 days in `localStorage`
+- Light iOS Safari hint (Share → Add to Home Screen) when not standalone
+- Manifest: `id`, `related_applications` (webapp) for related-apps detection; SW cache bumped to `ppl-quiz-v2` + precaches `src/install.js`
+
 ## PWA + public deploy
 
 - Added `manifest.webmanifest`, icons (192/512 + maskable + apple-touch), and `sw.js` offline cache
