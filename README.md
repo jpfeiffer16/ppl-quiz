@@ -24,6 +24,8 @@ python3 -m http.server 8765
 
 Open: **http://127.0.0.1:8765/**
 
+**Live (HTTPS / phone):** https://jpfeiffer16.github.io/ppl-quiz/
+
 > Modules require HTTP (not `file://`).
 
 
