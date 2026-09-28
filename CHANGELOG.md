@@ -1,0 +1,77 @@
+# Changelog
+
+## PWA + public deploy
+
+- Added `manifest.webmanifest`, icons (192/512 + maskable + apple-touch), and `sw.js` offline cache
+- Wired theme-color / apple-mobile-web-app meta + SW registration (https/localhost only)
+- README: Install on phone steps
+
+## 2026-09-28 — Handbook depth expansion (entire-handbook floor)
+
+### Raised chapter floors
+- Target **≥12–15 original items per chapter** for PHAK (1–17) and AFH (1–18)
+- **PHAK**: 194 → **248** (mcq 206 · scenario 23 · mnemonic 4 · decode 15)
+- **AFH**: 143 → **247** (mcq 209 · scenario 36 · mnemonic 2)
+- **Notes**: unchanged at **74** · **All packs**: **569**
+
+### Per-chapter (after)
+- **PHAK**: Ch1–11/14–15 = 14 each; Ch12 weather theory = 16; Ch13 weather services = **20** (decode-heavy); Ch16–17 = 15
+- **AFH**: Ch1–12/18 = 14 each; transition Ch13–17 = 13 each (was ~5–6)
+
+### Priority fills
+- AFH Ch8 traffic patterns 6 → 14 (entries, TPA, base timing, mid-air collision context)
+- AFH Ch12 complex 6 → 14 (HP vs complex, flaps, prop/MP order, gear warning)
+- AFH Ch13–17 multiengine / tailwheel / turboprop / jet / LSA each 5 → 13
+- PHAK Ch13: +8 weather products including METAR/TAF/SPECI/PIREP **decode** sets (RVR, TEMPO, M-temps, +TSRA, etc.)
+
+### Generators
+- New `scripts/banks/phak_expand.py` and `scripts/banks/afh_expand.py`
+- `scripts/build_banks.py` concatenates base + expand modules
+- Rebuild: `python3 scripts/build_banks.py`
+
+### Kept
+- Original FAA-handbook-grounded items only (no commercial bank copies)
+- UI / Study·Exam joy polish unchanged; server still at http://127.0.0.1:8765/
+
+## 2026-09-28 — Handbook packs (PHAK + AFH)
+
+### Added
+- **Multi-pack architecture**: `data/packs.json`, `data/index.js`, `bank-notes.js` / `bank-phak.js` / `bank-afh.js`
+- **Pack picker** on home: Notes | PHAK | AFH | All
+- **PHAK pack** (started ~194; now see depth expansion): chapters 1–17 of FAA-H-8083-25C
+- **AFH pack** (started ~143; now see depth expansion): chapters 1–18 of FAA-H-8083-3C
+- **Sources**: chapter PDFs + `pdftotext` extracts under `sources/`; MOSAIC addenda saved
+- **Generators**: `scripts/banks/*.py` + `scripts/build_banks.py` for maintainable bank rebuilds
+- Storage key bumped to `ppl-quiz:v2` (persists selected pack)
+
+### Kept
+- Area I study-notes pack intact as its own bank (74 items)
+- Study/Exam mode, joy polish, keyboard shortcuts, streak/score chips
+
+### Coverage notes (superseded by depth expansion above)
+- Initial release had thinner AFH transition / pattern chapters; expanded in the depth pass
+
+## 2026-09-28 — Joy pass + foundations
+
+### Audit (pre-polish)
+- Home was a flat form: no bank breakdown, no mode choice, no recall of last session
+- Quiz had select-then-next with no study feedback; progress felt thin; quit had no confirm
+- Results always “green”; missed review mashed METAR/scenario into one blob
+- Monolithic `app.js` IIFE — hard to extend for banks / spaced rep / oral mode
+- Weak focus styles, limited keyboard support, no persistence
+
+### What changed
+- **Study vs Exam mode** — check-as-you-go with explanations, or review-at-end
+- **Home** — bank stats by type, chip type filters, mode toggle, streak / last score chips, empty-filter hint, warm microcopy
+- **Quiz** — tactile choices with correct/wrong reveal (study), live score, sticky tags, mnemonic hints, A–D / Enter / Esc, quit confirm
+- **Results** — tone by score, celebratory perfect banner, readable missed cards (decode/scenario blocks), one-tap retry missed / new set / same set
+- **Persistence** — `localStorage` for filters, sessions, streak, last/best score
+- **Architecture** — ES modules: data banks · `src/engine.js` · `src/storage.js` · `src/app.js`
+- **Design tokens** — CSS variables for color, radius, motion, focus ring; reduced-motion respected
+
+### Intentional follow-ons
+- Spaced repetition scheduling
+- Progress charts / per-topic mastery
+- Oral / speak-answer mode
+- Offline service worker
+- Deeper per-chapter item counts where thin

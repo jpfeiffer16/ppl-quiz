@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "packs": [
+    {
+      "id": "notes",
+      "label": "Study Notes",
+      "short": "Notes",
+      "description": "ACS Area I condensed notes drills (PA.I.A–H)",
+      "handbook": "Notes",
+      "source": null
+    },
+    {
+      "id": "phak",
+      "label": "PHAK",
+      "short": "PHAK",
+      "description": "Pilot’s Handbook of Aeronautical Knowledge (FAA-H-8083-25C)",
+      "handbook": "PHAK",
+      "source": "FAA-H-8083-25C"
+    },
+    {
+      "id": "afh",
+      "label": "AFH",
+      "short": "AFH",
+      "description": "Airplane Flying Handbook (FAA-H-8083-3C)",
+      "handbook": "AFH",
+      "source": "FAA-H-8083-3C"
+    },
+    {
+      "id": "all",
+      "label": "All packs",
+      "short": "All",
+      "description": "Notes + PHAK + AFH combined",
+      "handbook": null,
+      "source": null
+    }
+  ]
+}

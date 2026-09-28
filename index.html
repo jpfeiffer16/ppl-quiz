@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="Private Pilot practice quiz — Study Notes, PHAK, and AFH packs." />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="PPL Quiz" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <title>PPL Quiz — Private Pilot Practice</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="logo" aria-hidden="true">PPL</div>
+      <div class="header-text">
+        <h1>Private Pilot Quiz</h1>
+        <p class="subtitle">Notes · PHAK · AFH · ACS-tagged</p>
+      </div>
+    </header>
+
+    <main>
+      <!-- HOME -->
+      <section id="view-home" class="view active" aria-label="Home">
+        <div class="card home-card">
+          <p class="eyebrow">Ready when you are</p>
+          <h2>Start a set</h2>
+          <p class="lede">
+            MCQ, weather decode, mnemonics, and scenarios from your notes plus FAA PHAK &amp; AFH.
+            Pick a pack, dial filters, and drill until it sticks.
+          </p>
+
+          <div class="bank-overview" aria-label="Question bank">
+            <div class="bank-total-block">
+              <span class="bank-total" id="bank-total">0</span>
+              <span class="bank-total-label">in the bank</span>
+            </div>
+            <div class="type-stats" id="type-stats"></div>
+          </div>
+
+          <div class="home-stats" id="home-stats" hidden>
+            <span class="persist-chip" id="streak-chip" hidden></span>
+            <span class="persist-chip" id="last-score-chip" hidden></span>
+          </div>
+
+          <div class="field">
+            <span class="field-label" id="pack-label">Question pack</span>
+            <div class="chip-row" id="pack-chips" role="group" aria-labelledby="pack-label"></div>
+            <p class="pack-blurb" id="pack-blurb"></p>
+          </div>
+
+          <div class="field">
+            <span class="field-label" id="type-label">Question type</span>
+            <div class="chip-row" id="type-chips" role="group" aria-labelledby="type-label"></div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="topic-select">Topic</label>
+              <select id="topic-select"></select>
+            </div>
+            <div class="field">
+              <label for="count-select">Questions</label>
+              <select id="count-select"></select>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="field-label" id="mode-label">Mode</span>
+            <div class="mode-toggle" role="group" aria-labelledby="mode-label">
+              <button type="button" class="mode-btn is-active" id="mode-study" aria-pressed="true">
+                <span class="mode-title">Study</span>
+                <span class="mode-desc">Check as you go</span>
+              </button>
+              <button type="button" class="mode-btn" id="mode-exam" aria-pressed="false">
+                <span class="mode-title">Exam</span>
+                <span class="mode-desc">Review at the end</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="start-row">
+            <button type="button" class="btn btn-primary btn-lg" id="start-btn">
+              Start drilling
+            </button>
+            <p class="match-line">
+              <strong id="filtered-count">0</strong> match your filters
+            </p>
+          </div>
+          <p class="empty-hint" id="empty-hint" hidden>
+            Nothing in that slice — loosen a filter and try again.
+          </p>
+
+          <p class="note">
+            Original practice items — Study Notes (ACS Area&nbsp;I) plus PHAK (FAA-H-8083-25C)
+            and AFH (FAA-H-8083-3C) chapter coverage. Not a copied FAA or commercial test bank.
+          </p>
+        </div>
+      </section>
+
+      <!-- QUIZ -->
+      <section id="view-quiz" class="view" aria-label="Quiz" hidden>
+        <div class="card quiz-card" id="quiz-card">
+          <div class="quiz-top">
+            <div class="quiz-top-left">
+              <span class="progress-text" id="progress-text">1 of 1</span>
+              <span class="live-score" id="live-score" hidden></span>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm" id="quit-btn">Quit</button>
+          </div>
+
+          <div
+            class="progress-bar"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+            aria-label="Quiz progress"
+          >
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+
+          <div class="tag-row">
+            <span class="topic-tag" id="topic-tag">Topic</span>
+            <span class="acs-tag" id="acs-tag" hidden></span>
+            <span class="type-tag" id="type-tag" hidden></span>
+          </div>
+
+          <pre class="prompt-block" id="prompt-block" hidden></pre>
+          <p class="question-text" id="question-text"></p>
+
+          <div class="choices" id="choices" role="group" aria-label="Answer choices"></div>
+
+          <div class="mnemonic-form" id="mnemonic-form" hidden>
+            <div class="mnemonic-rows" id="mnemonic-rows"></div>
+            <button type="button" class="btn btn-primary" id="mnemonic-submit">Check answers</button>
+            <p class="mnemonic-feedback" id="mnemonic-feedback" hidden role="status"></p>
+          </div>
+
+          <div class="feedback-panel" id="feedback-panel" hidden role="status" aria-live="polite">
+            <div class="feedback-status" id="feedback-status"></div>
+            <p class="feedback-explain" id="feedback-explain"></p>
+          </div>
+
+          <div class="btn-row quiz-actions">
+            <button type="button" class="btn btn-primary" id="next-btn" disabled>Next</button>
+            <span class="kbd-hint" aria-hidden="true">A–D select · Enter next · Esc quit</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESULTS -->
+      <section id="view-results" class="view" aria-label="Results" hidden>
+        <div class="card results-card">
+          <div class="score-hero" id="results-hero" data-tone="ok">
+            <div class="score-pct" id="score-pct">0%</div>
+            <h2 class="score-title" id="score-title">Results</h2>
+            <div class="score-detail" id="score-detail">0 of 0 correct</div>
+            <p class="score-blurb" id="score-blurb"></p>
+          </div>
+
+          <div class="perfect-banner" id="perfect-banner" hidden>
+            Full marks. That set is in the bag.
+          </div>
+
+          <div id="missed-section">
+            <h3 class="missed-heading">Missed — debrief</h3>
+            <ul class="missed-list" id="missed-list"></ul>
+          </div>
+
+          <div class="btn-row results-actions">
+            <button type="button" class="btn btn-primary" id="retry-missed-btn">Retry missed</button>
+            <button type="button" class="btn btn-secondary" id="new-set-btn">New set</button>
+            <button type="button" class="btn btn-ghost" id="retry-all-btn">Retry same set</button>
+            <button type="button" class="btn btn-ghost" id="home-btn">Home</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      Local practice · No account · Progress stays on this device
+    </footer>
+  </div>
+
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
