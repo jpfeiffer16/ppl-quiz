@@ -1,5 +1,14 @@
 # Changelog
 
+## Chapter filter (2026-10-03)
+
+- Home screen **Chapter** select lists chapters present on the selected pack (`chapter` + `chapterTitle`)
+- Defaults to All chapters; narrows the pool with type, topic, and count and updates the match line
+- Saved on the existing `ppl-quiz:v2` filters object (`chapter`, default `"all"` — old saves still load)
+- Hidden when the pack has no chapter metadata (Study Notes)
+- Service worker cache bumped to `ppl-quiz-v3`
+
+
 ## Install affordance (2026-09-28)
 
 - Native-style **Install app** banner: listens for `beforeinstallprompt`, stashes event, calls `prompt()` + handles `userChoice`

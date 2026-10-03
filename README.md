@@ -71,7 +71,7 @@ GitHub Pages / Netlify / Cloudflare serve `.webmanifest` correctly by default.
 ## Features
 
 - **Pack picker**: Notes | PHAK | AFH | All
-- Home filters: **type chips**, **topic**, **count**, **Study / Exam** mode
+- Home filters: **type chips**, **chapter** (PHAK/AFH; hidden on Notes), **topic**, **count**, **Study / Exam** mode
 - Bank overview (counts by type) + last score / streak (local)
 - Study mode: immediate feedback + explanation; Exam mode: reveal at results
 - Progress bar, live score (study), keyboard: `A`–`D` / `1`–`4`, `Enter`, `Esc`

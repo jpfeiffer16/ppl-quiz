@@ -301,6 +301,10 @@ body {
   margin-bottom: 1.15rem;
 }
 
+.field[hidden] {
+  display: none;
+}
+
 .field label,
 .field-label {
   display: block;

@@ -10,6 +10,7 @@ import {
   LETTERS,
   bankStats,
   filterBank,
+  listChapters,
   shuffle,
   createSession,
   currentQuestion,
@@ -41,6 +42,8 @@ const els = {
   filteredCount: $("filtered-count"),
   typeStats: $("type-stats"),
   topicSelect: $("topic-select"),
+  chapterField: $("chapter-field"),
+  chapterSelect: $("chapter-select"),
   typeChips: $("type-chips"),
   packChips: $("pack-chips"),
   packBlurb: $("pack-blurb"),
@@ -175,11 +178,48 @@ function populateTopics(preferred) {
   }
 }
 
+function selectedChapter() {
+  if (!els.chapterField || els.chapterField.hidden) return "all";
+  return els.chapterSelect.value || "all";
+}
+
+/** Chapters present on the active pack. Hidden when none have chapter metadata. */
+function populateChapters(preferred) {
+  const chapters = listChapters(activeBank);
+  if (!chapters.length) {
+    els.chapterField.hidden = true;
+    els.chapterSelect.innerHTML = "";
+    return;
+  }
+  els.chapterField.hidden = false;
+  const multi = new Set(chapters.map((c) => c.handbook)).size > 1;
+  els.chapterSelect.innerHTML = "";
+  const all = document.createElement("option");
+  all.value = "all";
+  all.textContent = "All chapters";
+  els.chapterSelect.appendChild(all);
+  chapters.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c.key;
+    const prefix = multi && c.handbook ? `${c.handbook} ` : "";
+    const title = c.title ? ` · ${c.title}` : "";
+    opt.textContent = `${prefix}Ch${c.chapter}${title} (${c.count})`;
+    els.chapterSelect.appendChild(opt);
+  });
+  const want = preferred && preferred !== "all" ? preferred : "all";
+  if ([...els.chapterSelect.options].some((o) => o.value === want)) {
+    els.chapterSelect.value = want;
+  } else {
+    els.chapterSelect.value = "all";
+  }
+}
+
 function currentFilters() {
   return {
     pack: selectedPack,
     topic: els.topicSelect.value,
     type: selectedType,
+    chapter: selectedChapter(),
     count: els.countSelect.value,
     mode: selectedMode,
   };
@@ -189,6 +229,7 @@ function refreshCountSelect(preferredCount) {
   const pool = filterBank(activeBank, {
     topic: els.topicSelect.value,
     type: selectedType,
+    chapter: selectedChapter(),
   });
   const n = pool.length;
   els.filteredCount.textContent = String(n);
@@ -261,6 +302,7 @@ function initHome() {
   renderTypeStats();
   renderTypeChips();
   populateTopics(saved.filters.topic);
+  populateChapters(saved.filters.chapter);
   refreshCountSelect(saved.filters.count);
   renderHomePersistence(saved);
 }
@@ -284,6 +326,7 @@ function startFromHome() {
   const pool = filterBank(activeBank, {
     topic: els.topicSelect.value,
     type: selectedType,
+    chapter: selectedChapter(),
   });
   const count = Number(els.countSelect.value) || pool.length;
   if (!pool.length) return;
@@ -732,6 +775,10 @@ els.topicSelect.addEventListener("change", () => {
   refreshCountSelect();
   persistFilters();
 });
+els.chapterSelect.addEventListener("change", () => {
+  refreshCountSelect();
+  persistFilters();
+});
 els.countSelect.addEventListener("change", persistFilters);
 
 els.packChips.addEventListener("click", (e) => {
@@ -742,6 +789,7 @@ els.packChips.addEventListener("click", (e) => {
   renderTypeStats();
   els.bankTotal.textContent = String(stats.total);
   populateTopics("all");
+  populateChapters("all");
   renderTypeChips();
   refreshCountSelect();
   persistFilters();

@@ -85,11 +85,56 @@ export function answerMatches(user, acceptable) {
   });
 }
 
-export function filterBank(bank, { topic = "all", type = "all", pack = "all" } = {}) {
+/** Stable chapter id, or null when the item has no chapter metadata. */
+export function chapterKey(q) {
+  if (q == null || q.chapter == null || q.chapter === "") return null;
+  const book = q.handbook || q.pack || "";
+  return `${book}:${q.chapter}`;
+}
+
+/**
+ * Chapters actually present in a bank, in handbook order (PHAK then AFH)
+ * then chapter number. Items with a null chapter are skipped.
+ */
+export function listChapters(bank) {
+  const order = [];
+  const seen = new Map();
+  for (const q of bank) {
+    const key = chapterKey(q);
+    if (!key) continue;
+    let entry = seen.get(key);
+    if (!entry) {
+      entry = {
+        key,
+        handbook: q.handbook || q.pack || "",
+        chapter: Number(q.chapter),
+        title: q.chapterTitle || "",
+        count: 0,
+      };
+      seen.set(key, entry);
+      order.push(entry);
+    }
+    entry.count += 1;
+    if (!entry.title && q.chapterTitle) entry.title = q.chapterTitle;
+  }
+  const rank = { PHAK: 0, phak: 0, AFH: 1, afh: 1 };
+  order.sort((a, b) => {
+    const ra = rank[a.handbook] ?? 9;
+    const rb = rank[b.handbook] ?? 9;
+    if (ra !== rb) return ra - rb;
+    const hb = String(a.handbook).localeCompare(String(b.handbook));
+    if (hb) return hb;
+    return a.chapter - b.chapter;
+  });
+  return order;
+}
+
+export function filterBank(bank, { topic = "all", type = "all", pack = "all", chapter = "all" } = {}) {
   return bank.filter((q) => {
     if (pack !== "all" && pack && q.pack !== pack) return false;
     if (topic !== "all" && q.topic !== topic) return false;
     if (type !== "all" && (q.type || "mcq") !== type) return false;
+    if (chapter && chapter !== "all" && chapterKey(q) !== chapter) return false;
     return true;
   });
 }

@@ -10,6 +10,7 @@ const DEFAULTS = {
     pack: "notes",
     topic: "all",
     type: "all",
+    chapter: "all", // "all" or handbook:number, e.g. "PHAK:3"
     count: "10",
     mode: "study", // study | exam
   },
