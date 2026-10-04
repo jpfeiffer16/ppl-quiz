@@ -1,5 +1,13 @@
 # Changelog
 
+## Practice last misses (2026-10-04)
+
+- Finished sessions save missed question ids on `ppl-quiz:v2` (`stats.lastMissedIds`, cap 40) plus a short count label
+- A perfect session clears that list
+- Home shows **Practice N misses** when those ids still exist in the loaded banks, and starts exactly those questions in the current Study/Exam mode (chapter and type filters are not applied)
+- Service worker cache bumped to `ppl-quiz-v4`
+
+
 ## Chapter filter (2026-10-03)
 
 - Home screen **Chapter** select lists chapters present on the selected pack (`chapter` + `chapterTitle`)

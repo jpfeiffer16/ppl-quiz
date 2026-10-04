@@ -51,6 +51,7 @@ const els = {
   modeStudy: $("mode-study"),
   modeExam: $("mode-exam"),
   startBtn: $("start-btn"),
+  practiceMissedBtn: $("practice-missed-btn"),
   emptyHint: $("empty-hint"),
   homeStats: $("home-stats"),
   streakChip: $("streak-chip"),
@@ -262,8 +263,41 @@ function refreshCountSelect(preferredCount) {
   }
 }
 
+/** Questions from the saved miss list that still exist in the loaded banks. */
+function questionsForMissedIds(ids) {
+  if (!Array.isArray(ids) || !ids.length) return [];
+  const byId = new Map();
+  for (const q of ALL_BANKS) {
+    if (q && q.id != null && !byId.has(q.id)) byId.set(q.id, q);
+  }
+  const out = [];
+  const seen = new Set();
+  for (const id of ids) {
+    const q = byId.get(id);
+    if (!q || seen.has(q.id)) continue;
+    seen.add(q.id);
+    out.push(q);
+  }
+  return out;
+}
+
+function renderPracticeMissed(saved) {
+  const questions = questionsForMissedIds(saved.stats.lastMissedIds);
+  const btn = els.practiceMissedBtn;
+  if (!btn) return;
+  if (!questions.length) {
+    btn.hidden = true;
+    btn.textContent = "Practice misses";
+    return;
+  }
+  const n = questions.length;
+  btn.hidden = false;
+  btn.textContent = n === 1 ? "Practice 1 miss" : `Practice ${n} misses`;
+}
+
 function renderHomePersistence(saved) {
   const { streak, lastScore, sessionsCompleted } = saved.stats;
+  renderPracticeMissed(saved);
   if (streak > 0) {
     els.streakChip.hidden = false;
     els.streakChip.textContent =
@@ -612,7 +646,13 @@ function finishQuiz() {
   const { total, correctCount, pct, missed } = sessionScore(session);
   const msg = scoreMessage(pct, { perfect: missed.length === 0 });
 
-  const persisted = recordSession({ pct, correct: correctCount, total });
+  const missedIds = missed.map((m) => m.questionId);
+  const persisted = recordSession({
+    pct,
+    correct: correctCount,
+    total,
+    missedIds,
+  });
 
   els.resultsHero.dataset.tone = msg.tone;
   els.scorePct.textContent = `${pct}%`;
@@ -712,6 +752,18 @@ function retryMissed() {
   startQuiz(shuffle(session.lastMissed), session.mode);
 }
 
+/** Home drill: exact saved misses, current Study/Exam mode, no chapter/type filter. */
+function practiceMissedFromHome() {
+  const saved = loadState();
+  const questions = questionsForMissedIds(saved.stats.lastMissedIds);
+  if (!questions.length) {
+    renderPracticeMissed(saved);
+    return;
+  }
+  persistFilters();
+  startQuiz(shuffle(questions), selectedMode);
+}
+
 function newSetSameFilters() {
   // Re-roll from last home filters (still in selects / chips)
   startFromHome();
@@ -759,6 +811,7 @@ function onGlobalKey(e) {
 /* ── Events ───────────────────────────────────────────────────────────── */
 
 els.startBtn.addEventListener("click", startFromHome);
+els.practiceMissedBtn.addEventListener("click", practiceMissedFromHome);
 els.nextBtn.addEventListener("click", goNext);
 els.quitBtn.addEventListener("click", quitQuiz);
 els.mnemonicSubmit.addEventListener("click", checkMnemonic);
