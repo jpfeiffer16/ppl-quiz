@@ -77,6 +77,7 @@ GitHub Pages / Netlify / Cloudflare serve `.webmanifest` correctly by default.
 - Progress bar, live score (study), keyboard: `A`–`D` / `1`–`4`, `Enter`, `Esc`
 - Results with tone-aware copy, missed debrief, retry missed / new set / same set
 - Home **Practice N misses** recalls the last session’s misses (saved on this device) in the current Study/Exam mode
+- Home **Best: N%** chip plus **Weak topics** (lowest accuracy with enough samples); tap a weak topic to drill it on the current pack
 - Dark calm aviation UI (design tokens in `styles.css`)
 - **PWA**: installable on phone (manifest + service worker + offline cache)
 

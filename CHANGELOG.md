@@ -1,5 +1,13 @@
 # Changelog
 
+## Per-topic mastery lite (2026-10-05)
+
+- Finished sessions update `stats.topicStats` on `ppl-quiz:v2` — per-topic `{ seen, correct }` for every answered question (backward compatible; old saves load with an empty map)
+- Home shows a **Best: N%** chip when `bestPct` is set
+- Home **Weak topics** chips: up to 3 lowest-accuracy topics with `seen >= 3` (falls back to `seen >= 2`); tap starts a topic-only drill on the current pack in Study/Exam mode (up to 10 questions)
+- Service worker cache bumped to `ppl-quiz-v5`
+
+
 ## Practice last misses (2026-10-04)
 
 - Finished sessions save missed question ids on `ppl-quiz:v2` (`stats.lastMissedIds`, cap 40) plus a short count label

@@ -22,6 +22,7 @@ const DEFAULTS = {
     bestPct: null,
     lastMissedIds: [], // question ids from the last finished session
     lastMissedLabel: null, // short count label, e.g. "3 misses"
+    topicStats: {}, // { [topic]: { seen, correct } }
   },
 };
 
@@ -47,6 +48,22 @@ function normalizeMissedIds(value) {
 function missedLabel(count) {
   if (!count) return null;
   return count === 1 ? "1 miss" : `${count} misses`;
+}
+
+/** Coerce topicStats map; ignore junk from older / corrupt saves. */
+function normalizeTopicStats(raw) {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const out = {};
+  for (const [topic, entry] of Object.entries(raw)) {
+    if (typeof topic !== "string" || !topic.trim()) continue;
+    if (!entry || typeof entry !== "object") continue;
+    const seen = Math.max(0, Math.floor(Number(entry.seen) || 0));
+    if (seen === 0) continue;
+    let correct = Math.max(0, Math.floor(Number(entry.correct) || 0));
+    if (correct > seen) correct = seen;
+    out[topic] = { seen, correct };
+  }
+  return out;
 }
 
 function safeParse(raw) {
@@ -75,6 +92,7 @@ export function loadState() {
             ? statsIn.lastMissedLabel
             : missedLabel(lastMissedIds.length))
         : null,
+      topicStats: normalizeTopicStats(statsIn.topicStats),
     },
   };
 }
@@ -113,10 +131,55 @@ function yesterdayKey() {
 }
 
 /**
- * Record a finished session. Updates streak (calendar-day consecutive),
- * last score, best %, and session count.
+ * Apply per-topic seen/correct increments from finished-session answer records.
+ * Each answered question bumps its topic once.
  */
-export function recordSession({ pct, correct, total, missedIds }) {
+function applyTopicStats(topicStats, answers) {
+  if (!Array.isArray(answers) || !answers.length) return topicStats;
+  const next = { ...topicStats };
+  for (const a of answers) {
+    if (!a || typeof a !== "object") continue;
+    const topic =
+      (a.question && typeof a.question.topic === "string" && a.question.topic) ||
+      (typeof a.topic === "string" && a.topic) ||
+      "General";
+    const key = topic.trim() || "General";
+    const prev = next[key] || { seen: 0, correct: 0 };
+    const seen = (prev.seen || 0) + 1;
+    const correct = (prev.correct || 0) + (a.isCorrect ? 1 : 0);
+    next[key] = { seen, correct };
+  }
+  return next;
+}
+
+/**
+ * Topics with lowest accuracy among those with enough samples.
+ * Prefer seen >= 3; fall back to seen >= 2 if that yields nothing.
+ * Returns up to `limit` entries: { topic, seen, correct, accuracy }.
+ */
+export function weakTopics(topicStats, limit = 3) {
+  const map = normalizeTopicStats(topicStats);
+  const entries = Object.entries(map).map(([topic, { seen, correct }]) => ({
+    topic,
+    seen,
+    correct,
+    accuracy: seen > 0 ? correct / seen : 1,
+  }));
+  let pool = entries.filter((e) => e.seen >= 3);
+  if (!pool.length) pool = entries.filter((e) => e.seen >= 2);
+  pool.sort((a, b) => {
+    if (a.accuracy !== b.accuracy) return a.accuracy - b.accuracy;
+    if (a.seen !== b.seen) return b.seen - a.seen; // more evidence first on ties
+    return a.topic.localeCompare(b.topic);
+  });
+  return pool.slice(0, Math.max(0, limit));
+}
+
+/**
+ * Record a finished session. Updates streak (calendar-day consecutive),
+ * last score, best %, session count, last misses, and per-topic mastery.
+ */
+export function recordSession({ pct, correct, total, missedIds, answers }) {
   const state = loadState();
   const today = todayKey();
   const { lastSessionDate, streak } = state.stats;
@@ -147,6 +210,10 @@ export function recordSession({ pct, correct, total, missedIds }) {
     state.stats.lastMissedIds = ids;
     state.stats.lastMissedLabel = missedLabel(ids.length);
   }
+  state.stats.topicStats = applyTopicStats(
+    normalizeTopicStats(state.stats.topicStats),
+    answers
+  );
   saveState(state);
   return state.stats;
 }

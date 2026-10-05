@@ -24,7 +24,7 @@ import {
   mnemonicLetters,
   acceptList,
 } from "./engine.js";
-import { loadState, saveFilters, recordSession } from "./storage.js";
+import { loadState, saveFilters, recordSession, weakTopics } from "./storage.js";
 import { initInstallPrompt } from "./install.js";
 
 /* ── DOM refs ─────────────────────────────────────────────────────────── */
@@ -56,6 +56,9 @@ const els = {
   homeStats: $("home-stats"),
   streakChip: $("streak-chip"),
   lastScoreChip: $("last-score-chip"),
+  bestScoreChip: $("best-score-chip"),
+  weakTopics: $("weak-topics"),
+  weakTopicChips: $("weak-topic-chips"),
 
   progressText: $("progress-text"),
   progressFill: $("progress-fill"),
@@ -295,9 +298,40 @@ function renderPracticeMissed(saved) {
   btn.textContent = n === 1 ? "Practice 1 miss" : `Practice ${n} misses`;
 }
 
+function renderWeakTopics(saved) {
+  const section = els.weakTopics;
+  const row = els.weakTopicChips;
+  if (!section || !row) return;
+  const weak = weakTopics(saved.stats.topicStats, 3);
+  row.innerHTML = "";
+  if (!weak.length) {
+    section.hidden = true;
+    return;
+  }
+  section.hidden = false;
+  for (const w of weak) {
+    const pct = Math.round(w.accuracy * 100);
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "chip chip-weak";
+    btn.dataset.weakTopic = w.topic;
+    btn.title = `Drill ${w.topic} (${w.correct}/${w.seen})`;
+    const label = document.createElement("span");
+    label.className = "chip-weak-label";
+    label.textContent = w.topic;
+    const pctEl = document.createElement("span");
+    pctEl.className = "chip-weak-pct";
+    pctEl.textContent = `${pct}%`;
+    btn.appendChild(label);
+    btn.appendChild(pctEl);
+    row.appendChild(btn);
+  }
+}
+
 function renderHomePersistence(saved) {
-  const { streak, lastScore, sessionsCompleted } = saved.stats;
+  const { streak, lastScore, bestPct, sessionsCompleted } = saved.stats;
   renderPracticeMissed(saved);
+  renderWeakTopics(saved);
   if (streak > 0) {
     els.streakChip.hidden = false;
     els.streakChip.textContent =
@@ -313,7 +347,19 @@ function renderHomePersistence(saved) {
     els.lastScoreChip.hidden = true;
   }
 
-  els.homeStats.hidden = !(streak > 0 || lastScore || sessionsCompleted > 0);
+  if (bestPct != null && Number.isFinite(bestPct)) {
+    els.bestScoreChip.hidden = false;
+    els.bestScoreChip.textContent = `Best: ${bestPct}%`;
+  } else {
+    els.bestScoreChip.hidden = true;
+  }
+
+  els.homeStats.hidden = !(
+    streak > 0 ||
+    lastScore ||
+    (bestPct != null && Number.isFinite(bestPct)) ||
+    sessionsCompleted > 0
+  );
 }
 
 function setMode(mode) {
@@ -652,6 +698,7 @@ function finishQuiz() {
     correct: correctCount,
     total,
     missedIds,
+    answers: session.answers,
   });
 
   els.resultsHero.dataset.tone = msg.tone;
@@ -764,6 +811,20 @@ function practiceMissedFromHome() {
   startQuiz(shuffle(questions), selectedMode);
 }
 
+/** Home drill: one weak topic from the current pack; Study/Exam mode; up to 10. */
+function startWeakTopicFromHome(topic) {
+  if (!topic) return;
+  persistFilters();
+  const pool = filterBank(activeBank, {
+    topic,
+    type: "all",
+    chapter: "all",
+  });
+  if (!pool.length) return;
+  const count = Math.min(10, pool.length);
+  startQuiz(shuffle(pool).slice(0, count), selectedMode);
+}
+
 function newSetSameFilters() {
   // Re-roll from last home filters (still in selects / chips)
   startFromHome();
@@ -812,6 +873,11 @@ function onGlobalKey(e) {
 
 els.startBtn.addEventListener("click", startFromHome);
 els.practiceMissedBtn.addEventListener("click", practiceMissedFromHome);
+els.weakTopicChips?.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-weak-topic]");
+  if (!btn) return;
+  startWeakTopicFromHome(btn.dataset.weakTopic);
+});
 els.nextBtn.addEventListener("click", goNext);
 els.quitBtn.addEventListener("click", quitQuiz);
 els.mnemonicSubmit.addEventListener("click", checkMnemonic);

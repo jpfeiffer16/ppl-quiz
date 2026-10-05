@@ -295,6 +295,37 @@ body {
   border: 1px solid rgba(61, 156, 240, 0.25);
 }
 
+.weak-topics {
+  margin-bottom: 1.15rem;
+}
+
+.weak-topics[hidden] {
+  display: none;
+}
+
+.weak-topics .field-label {
+  margin-bottom: 0.45rem;
+}
+
+.chip-weak {
+  border-color: rgba(230, 180, 80, 0.35);
+  background: var(--warning-soft);
+  color: var(--warning);
+  max-width: 100%;
+  text-align: left;
+}
+
+.chip-weak:hover {
+  border-color: rgba(230, 180, 80, 0.55);
+  color: var(--text);
+}
+
+.chip-weak .chip-weak-pct {
+  opacity: 0.85;
+  font-weight: 600;
+  margin-left: 0.35rem;
+}
+
 /* ── Fields / chips / mode ─────────────────────────────────────────────── */
 
 .field {
