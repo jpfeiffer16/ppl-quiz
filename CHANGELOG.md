@@ -1,5 +1,9 @@
 # Changelog
 
+## Bold cyan logo (2026-10-05)
+
+- Bold cyan AeroTutor logo with repaired nose; icons/header/favicons refreshed; SW cache `ppl-quiz-v7`
+
 ## Brand logo refresh (2026-10-05)
 
 - Installed fixed first-style AeroTutor logo (no pride / no cyan-slash); icons 192/512 + maskable (~10% pad on `#0b1220`), apple-touch 180, favicons 32/48; header img + favicon links; SW cache `ppl-quiz-v6`

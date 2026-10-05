@@ -1,5 +1,5 @@
 /* PPL Quiz service worker — offline shell + static/data cache */
-const CACHE = "ppl-quiz-v6";
+const CACHE = "ppl-quiz-v7";
 
 const PRECACHE = [
   "./",
