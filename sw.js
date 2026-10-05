@@ -1,5 +1,5 @@
 /* PPL Quiz service worker — offline shell + static/data cache */
-const CACHE = "ppl-quiz-v5";
+const CACHE = "ppl-quiz-v6";
 
 const PRECACHE = [
   "./",
@@ -22,6 +22,8 @@ const PRECACHE = [
   "./icons/icon-maskable-192.png",
   "./icons/icon-maskable-512.png",
   "./icons/apple-touch-icon.png",
+  "./icons/favicon-32.png",
+  "./icons/favicon-48.png",
 ];
 
 self.addEventListener("install", (event) => {

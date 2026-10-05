@@ -1,5 +1,10 @@
 # Changelog
 
+## Brand logo refresh (2026-10-05)
+
+- Installed fixed first-style AeroTutor logo (no pride / no cyan-slash); icons 192/512 + maskable (~10% pad on `#0b1220`), apple-touch 180, favicons 32/48; header img + favicon links; SW cache `ppl-quiz-v6`
+
+
 ## Per-topic mastery lite (2026-10-05)
 
 - Finished sessions update `stats.topicStats` on `ppl-quiz:v2` — per-topic `{ seen, correct }` for every answered question (backward compatible; old saves load with an empty map)
