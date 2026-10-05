@@ -1,5 +1,9 @@
 # Changelog
 
+## Simple geometric logo (2026-10-05)
+
+- Install simple geometric AeroTutor logo (charcoal rounded square, cyan diagonal slash, white top-down plane); icons/header/favicons refreshed; SW cache `ppl-quiz-v9`
+
 ## Cessna-style logo (2026-10-05)
 
 - Install recognizable Cessna-style AeroTutor logo; icons/header/favicons refreshed; SW cache `ppl-quiz-v8`
