@@ -1,5 +1,9 @@
 # Changelog
 
+## Cessna-style logo (2026-10-05)
+
+- Install recognizable Cessna-style AeroTutor logo; icons/header/favicons refreshed; SW cache `ppl-quiz-v8`
+
 ## Bold cyan logo (2026-10-05)
 
 - Bold cyan AeroTutor logo with repaired nose; icons/header/favicons refreshed; SW cache `ppl-quiz-v7`
